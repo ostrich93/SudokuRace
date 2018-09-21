@@ -15,5 +15,16 @@ export function getSubgrid(grid, sgNum) {
 export function hasViolations(subgroup) {
     let subgroupFills = subgroup.map(c => c.fillValue);
     let sgSet = new Set(subgroupFills.sort(function(a,b) { return a-b; }));
-    return sgSet !== fillRanges;
+    return sgSet.size !== subgroupFills.length;
+}
+
+export function isReadyForSubmission(subgroup) {
+    let subgroupFills = subgroup.map(c => c.fillValue);
+    if (subgroupFills.length === 9) {
+        let sgSet = new Set(subgroupFills.sort(function(a,b) { return a-b}));
+        return sgSet === fillRanges;
+    }
+    else {
+        return false;
+    }
 }

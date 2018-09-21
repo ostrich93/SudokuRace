@@ -4,8 +4,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import { reactReduxFirebase } from 'react-redux-firebase';
 import { reduxFirestore } from 'redux-firestore';
-import firebaseDB from '../firebase';
-import firestoreDB from '../firestore';
+import firebaseConfig from '../firebase';
 import { initialState, rootReducer } from './reducers';
 
 firebase.initializeApp(firebaseConfig);
@@ -19,6 +18,6 @@ const enhancers = compose(
     })
 )(createStore);
 
-const store = createStore(rootReducer, initialState);
+const store = createStore(rootReducer, initialState, enhancers);
 
 export default store;

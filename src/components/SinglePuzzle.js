@@ -2,27 +2,91 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
-import { Cell } from '../data_structs/Cell';
+import Cell from '../data_structs/Cell';
+import { getPuzzle, selectCell, selectFill } from '../store/reducers/puzzle';
 import { getRow, getColumn, getSubgrid, hasViolations } from '../utils/subgroups';
+import SingleCell from './SingleCell';
 
 export default class SinglePuzzle extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            puzzle: [],
-            clues: [],
+            time: 0,
+            timerRunning: false,
             isSolved: false
         }
         this.buildPuzzle = this.buildPuzzle.bind(this);
+        this.getRow = this.getRow.bind(this);
+        this.getColumn = this.getColumn.bind(this);
+        this.getSubgrid = this.getSubgrid.bind(this);
+        this.handleCellSelect = this.handleCellSelect.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.submitScore = this.submitScore.bind(this);
+        this.startTimer = this.startTimer.bind(this);
+
     }
 
     componentDidMount() {
+        //start timer
         const clueList = this.props.clueList.clues;
         const puzzle = this.buildPuzzle(clueList);
-        this.setState({
-            clues: clueList,
-            puzzle: puzzle
-        });
+        this.props.getPuzzle(puzzle);
+        this.startTimer();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+
+    startTimer() {
+        const startTime = Date.now() - this.state.time;
+        this.timer = setInterval(() => {
+            this.setState({ timerRunning: true, time: Date.now() - startTime })
+        })
+    }
+
+    getRow(rowNum) {
+        return getRow(this.props.currentPuzzle, rowNum);
+    }
+
+    getColumn(colNum) {
+        return getColumn(this.props.currentPuzzle, colNum);
+    }
+
+    getSubgrid(sgNum) {
+        return getSubgrid(this.props.currentPuzzle, sgNum);
+    }
+
+    handleCellSelect(event) {
+        event.preventDefault();
+        let cell = event.target.value;
+        if (event.target.value === this.props.selectedCell) {
+            dispatch(this.props.selectCell({}));
+        }
+        else
+            dispatch(this.props.selectCell(cell));
+    }
+
+    handleSubmit(event) { //used after picking cell and then clicking on a number on the pad.
+        event.preventDefault();
+        let currentCell = this.props.currentCell;
+        if (currentCell && !currentCell.isClue) {
+            let nVal = event.target.value;
+            let nCell = new Cell(nVal, currentCell.rowNum, currentCell.colNum, currentCell.sgNum, false)
+            dispatch(nCell);
+        }
+    }
+
+    submitScore(event) {
+        event.preventDefault();
+
+    }
+
+    isValid(cell) {
+        const targetRow = this.getRow(cell.rowNum);
+        const targetCol = this.getColumn(cell.colNum);
+        const targetSG = this.getSubgrid(cell.sgNum);
+        return [targetRow, targetCol, targetSG].every(group => !hasViolations(group)); //return true if all hasViolations === false
     }
 
     buildPuzzle(clues) {
@@ -71,20 +135,49 @@ export default class SinglePuzzle extends Component {
     }
 
     render() {
-
+        let cells = this.props.currentPuzzle;
+        return (
+            <div>
+                <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
+                    {cells.map(cell => <SingleCell isValid={this.isValid(cell)} cell={cell} handleCellSelect={this.handleCellSelect}/>)}
+                </div>
+                <div className="buttonContainer"> {/* used to hold the buttons for changing fill values **/}
+                    <button onClick={this.handleSubmit} value={1}>1</button>
+                    <button onClick={this.handleSubmit} value={2}>2</button>
+                    <button onClick={this.handleSubmit} value={3}>3</button>
+                    <button onClick={this.handleSubmit} value={4}>4</button>
+                    <button onClick={this.handleSubmit} value={5}>5</button>
+                    <button onClick={this.handleSubmit} value={6}>6</button>
+                    <button onClick={this.handleSubmit} value={7}>7</button>
+                    <button onClick={this.handleSubmit} value={8}>8</button>
+                    <button onClick={this.handleSubmit} value={9}>9</button>
+                    <button onClick={this.handleSubmit} value={0}>Erase</button>
+                </div>
+                <div>
+                    {/* something that holds the timer */}
+                    <button disabled={!this.state.isSolved} onClick={this.submitScore}></button>
+                </div>
+            </div>
+        )
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+    const pid = ownProps.match.params.id;
+    const puzzles = state.firestore.data.puzzles;
+    const puzzle = puzzle ? puzzles[pid] : null;
+    const handle = state.leaderboards.handle;
     return {
-        uid: state.firebase.auth.uid,
-        clueList: state.firestore.ordered.puzzles ? state.firestore.ordered.puzzles && state.firestore.ordered.puzzles[props.pid] : {},
-        currentPuzzle: state.puzzle.currentPuzzle
+        clueList: puzzle,
+        auth: state.firebase.auth,
+        handle: handle
     }
 };
 
 const mapDispatchToProps = dispatch => ({
-    getPuzzle: dispatch(get)
+    getPuzzle: puzzle => dispatch(getPuzzle(puzzle)),
+    selectCell: cell => dispatch(selectCell(cell)),
+    selectFill: fill => dispatch(selectFill(fill)),
 });
 
 export default compose(
@@ -92,7 +185,7 @@ export default compose(
     firestoreConnect((props) => {
         if (!props.pid) return [];
         return [
-            { collection: 'puzzles', doc: props.pid }
+            { collection: 'puzzles' }
         ]
     })
 )(SinglePuzzle);
