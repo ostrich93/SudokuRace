@@ -4,8 +4,9 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Cell from '../data_structs/Cell';
 import { getPuzzle, selectCell, selectFill } from '../store/reducers/puzzle';
-import { getRow, getColumn, getSubgrid, hasViolations } from '../utils/subgroups';
+import { getRow, getColumn, getSubgrid, hasViolations, isReadyForSubmission } from '../utils/subgroups';
 import SingleCell from './SingleCell';
+import fillRanges from '../data_structs/fillRanges';
 
 export default class SinglePuzzle extends Component {
     constructor(props) {
@@ -79,7 +80,19 @@ export default class SinglePuzzle extends Component {
 
     submitScore(event) {
         event.preventDefault();
-
+        const inds = [0,1,2,3,4,5,6,7,8];
+        const rows = inds.map(i => this.getRow(i));
+        const cols = inds.map(i => this.getColumn(i));
+        const sgs = inds.map(i => getSubgrid(i));
+        let allgroups = [rows].concat(cols,sgs);
+        if (allgroups.every(group => isReadyForSubmission(group))){
+            this.setState({
+                isSolved: true,
+                timerRunning: false
+            });
+        }
+        else
+            console.log('not ready for submission');
     }
 
     isValid(cell) {
@@ -123,11 +136,11 @@ export default class SinglePuzzle extends Component {
             }
             let possClue = clues.find(clue => clue.rowNum === rn && clue.colNum === cn && clue.sgNum === sgval);
             if (possClue) {
-                let clueCell = new Cell(possClue.fillValue, rn, cn, sgval, true);
+                let clueCell = new Cell(possClue.fillValue, rn, cn, sgval, i, true);
                 cellArr.push(clueCell);
             }
             else {
-                let newCell = new Cell(0, rn, cn, sgval);
+                let newCell = new Cell(0, rn, cn, sgval, i);
                 cellArr.push(newCell);
             }
         }
@@ -139,7 +152,7 @@ export default class SinglePuzzle extends Component {
         return (
             <div>
                 <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
-                    {cells.map(cell => <SingleCell isValid={this.isValid(cell)} cell={cell} handleCellSelect={this.handleCellSelect}/>)}
+                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid(cell)} cell={cell} handleCellSelect={this.handleCellSelect}/>)}
                 </div>
                 <div className="buttonContainer"> {/* used to hold the buttons for changing fill values **/}
                     <button onClick={this.handleSubmit} value={1}>1</button>
@@ -155,7 +168,7 @@ export default class SinglePuzzle extends Component {
                 </div>
                 <div>
                     {/* something that holds the timer */}
-                    <button disabled={!this.state.isSolved} onClick={this.submitScore}></button>
+                    <button onClick={this.submitScore}>Submit</button>
                 </div>
             </div>
         )
@@ -185,7 +198,8 @@ export default compose(
     firestoreConnect((props) => {
         if (!props.pid) return [];
         return [
-            { collection: 'puzzles' }
+            { collection: 'puzzles' },
+            { collection: 'soloBoards'}
         ]
     })
 )(SinglePuzzle);

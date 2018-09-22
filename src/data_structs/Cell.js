@@ -1,18 +1,19 @@
 class Cell {
     /**
-     * 
+     * @param { Number } index
      * @param { Number } fillValue 
      * @param { Number } rowNum 
      * @param { Number } colNum 
      * @param { Number } sgNum 
      * @param { Boolean } isClue
      */
-    constructor(fillValue = 0, rowNum, colNum, sgNum, clueMark = false) {
+    constructor(fillValue = 0, rowNum, colNum, sgNum, index, clueMark = false) {
         this.fillValue = fillValue;
         this.rowNum = rowNum;
         this.colNum = colNum;
         this.sgNum = sgNum;
         this.isClue = clueMark;
+        this.index = index;
     }
 
     /**
