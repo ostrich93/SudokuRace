@@ -34,6 +34,7 @@ export const login = (credentials) => {
         const firebase = getFirebase();
         try {
             const response = await firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);
+            console.log('response.user', response.user);
             dispatch(setLoggedInUser(response.user));
         } catch(err) {
             console.log(err.stack);
@@ -42,10 +43,11 @@ export const login = (credentials) => {
 }
 
 export const signOut = () => {
-    return async (dispatch, getState, {getFirebase}) => {
+    return (dispatch, getState, {getFirebase}) => {
         const firebase = getFirebase();
-        await firebase.auth().signOut();
-        dispatch(removeLoggedInUser());
+        firebase.auth().signOut().then(() => {
+            dispatch(removeLoggedInUser())
+        });
     }
 }
 
@@ -59,6 +61,7 @@ export const signUp = (newUser) => {
                 displayName: newUser.displayName
             });
             dispatch(setLoggedInUser(res.user))
+            console.log('res.user', res.user)
         } catch (err) {
             throw err;
         }

@@ -23,12 +23,14 @@ class Login extends Component {
             email: '',
             password: ''
         }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(e) {
         this.setState({
             [e.target.name] : e.target.value
-        })
+        });
     }
 
     async handleSubmit(e) {
@@ -41,18 +43,23 @@ class Login extends Component {
 
     render() {
         const { auth, user } = this.props;
-        if (Object.keys(user).length || auth.uid) return <Redirect to="/" />
+        if (!auth) return <Redirect to="/" />
         return (
             <div className="container">
                 <h3>Login</h3>
-                <div className="input-field">
-                    <label htmlFor="email">Email</label>
-                    <input name="email" type="email" required value={this.state.email} />
-                </div>
-                <div className="input-field">
-                    <label htmlFor="password">Password</label>
-                    <input name="password" type="password" required value={this.state.password} />
-                </div>
+                <form onSubmit={this.handleSubmit}>
+                    <div className="input-field">
+                        <label htmlFor="email">Email</label>
+                        <input name="email" type="email" required value={this.state.email} onChange={this.handleChange} />
+                    </div>
+                    <div className="input-field">
+                        <label htmlFor="password">Password</label>
+                        <input name="password" type="password" required value={this.state.password} onChange={this.handleChange} />
+                    </div>
+                    <div>
+                        <button type="submit">Login</button>
+                    </div>
+                </form>
             </div>
         );
     }

@@ -3,28 +3,29 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { getPuzzle } from '../store/reducers/puzzle';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => {
+    console.log('state', state);
     return {
-        puzzles: state.firestore.ordered.puzzles,
         selectedPuzzle: state.puzzle.selectedPuzzle
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        selectPuzzle: puzzle => dispatch(getPuzzle(puzzle))
-    };
-};
+// const mapDispatchToProps = dispatch => ({
+//         selectPuzzle: puzzle => dispatch(getPuzzle(puzzle))
+// });
 
 const AllPuzzles = props => {
+    console.log('all puzzles props', props);
+    const puzzles = props.puzzles;
     return (
         <div>
-            {props.puzzles.map(
+            {puzzles && puzzles.map(
                 puzzle => {
                     return (
                         <div key={puzzle.id}>
-                            <NavLink to={`/puzzles/${puzzle.id}`}><h4>{puzzle.id}</h4></NavLink>
+                            <NavLink to={`/puzzle/${puzzle.id}`}><h4>{puzzle.id}</h4></NavLink>
                         </div>
                     )
                 }
@@ -33,13 +34,4 @@ const AllPuzzles = props => {
     );
 }
 
-export default compose(
-    connect(mapStateToProps, mapDispatchToProps,
-        firestoreConnect((props) => {
-            return [
-                {
-                    collection: 'puzzles'
-                }
-            ]
-        }))
-)(AllPuzzles);
+export default connect(mapStateToProps)(AllPuzzles);

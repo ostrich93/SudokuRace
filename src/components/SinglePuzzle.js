@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Cell from '../data_structs/Cell';
-import { getPuzzle, selectCell, selectFill } from '../store/reducers/puzzle';
+import { getPuzzle, selectCell, selectFill, changeCell } from '../store/reducers/puzzle';
 import { getRow, getColumn, getSubgrid, hasViolations, isReadyForSubmission } from '../utils/subgroups';
 import SingleCell from './SingleCell';
 import fillRanges from '../data_structs/fillRanges';
@@ -27,11 +27,12 @@ class SinglePuzzle extends Component {
 
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         //start timer
         const clueList = this.props.clueList.clues;
         const puzzle = this.buildPuzzle(clueList);
-        this.props.getPuzzle(puzzle);
+        const res = await this.props.getPuzzle(puzzle);
+        console.log('res', res);
         this.startTimer();
     }
 
@@ -62,10 +63,10 @@ class SinglePuzzle extends Component {
         event.preventDefault();
         let cell = event.target.value;
         if (event.target.value === this.props.selectedCell) {
-            dispatch(this.props.selectCell({}));
+            this.props.selectCell({});
         }
         else
-            dispatch(this.props.selectCell(cell));
+            this.props.selectCell(cell);
     }
 
     handleSubmit(event) { //used after picking cell and then clicking on a number on the pad.
@@ -74,7 +75,7 @@ class SinglePuzzle extends Component {
         if (currentCell && !currentCell.isClue) {
             let nVal = event.target.value;
             let nCell = new Cell(nVal, currentCell.rowNum, currentCell.colNum, currentCell.sgNum, false)
-            dispatch(nCell);
+            this.props.changeCell(nCell);
         }
     }
 
@@ -90,6 +91,7 @@ class SinglePuzzle extends Component {
                 isSolved: true,
                 timerRunning: false
             });
+            console.log('submission success');
         }
         else
             console.log('not ready for submission');
@@ -149,6 +151,7 @@ class SinglePuzzle extends Component {
 
     render() {
         let cells = this.props.currentPuzzle;
+        console.log('cells', this.props);
         return (
             <div>
                 <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
@@ -178,12 +181,12 @@ class SinglePuzzle extends Component {
 const mapStateToProps = (state, ownProps) => {
     const pid = ownProps.match.params.id;
     const puzzles = state.firestore.data.puzzles;
-    const puzzle = puzzle ? puzzles[pid] : null;
-    const handle = state.leaderboards.handle;
+    const puzzle = puzzles ? puzzles[pid] : null;
+    // const handle = state.leaderboards.handle;
     return {
         clueList: puzzle,
         auth: state.firebase.auth,
-        handle: handle
+        // handle: handle
     }
 };
 
@@ -191,6 +194,7 @@ const mapDispatchToProps = dispatch => ({
     getPuzzle: puzzle => dispatch(getPuzzle(puzzle)),
     selectCell: cell => dispatch(selectCell(cell)),
     selectFill: fill => dispatch(selectFill(fill)),
+    changeCell: cell => dispatch(changeCell(cell))
 });
 
 export default compose(

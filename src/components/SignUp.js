@@ -24,6 +24,8 @@ class SignUp extends Component {
             password: '',
             displayName: ''
         }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(e) {
@@ -39,7 +41,7 @@ class SignUp extends Component {
 
     render() {
         const { auth, user } = this.props;
-        if (!Object.keys(user).length || !auth) return <Redirect to='/' />
+        if (!auth) return <Redirect to='/' />
         return (
             <div className="container">
                 <form onSubmit={this.handleSubmit}>
@@ -56,6 +58,7 @@ class SignUp extends Component {
                         <label htmlFor="password">password</label>
                         <input type="password" name="password" required value={this.state.password} onChange={this.handleChange} />
                     </div>
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         )

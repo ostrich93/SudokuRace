@@ -22,7 +22,7 @@ class Cell {
      */
     fillCell(fVal) {
         if (!this.isClue)
-            this.fillValue = fval;
+            this.fillValue = fVal;
     }
 
     isFilled() {
@@ -30,7 +30,7 @@ class Cell {
     }
 
     equals(input) {
-        return (this.rowNum === input.rowNum) && (this.colNum == input.colNum) && (this.sgNum === input.sgNum) && (this.isClue === input.isClue);
+        return (this.rowNum === input.rowNum) && (this.colNum === input.colNum) && (this.sgNum === input.sgNum) && (this.isClue === input.isClue);
     }
 
 }
