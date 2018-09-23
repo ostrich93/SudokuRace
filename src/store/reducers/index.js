@@ -7,10 +7,12 @@ import authReducer from './auth';
 
 export const initialState = {}; //TEMP, will probably get rid of later.
 
-export const rootReducer = combineReducers({
+const rootReducer = combineReducers({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
     auth: authReducer,
     leaderboards: leaderboardReducer,
     puzzle: puzzleReducer
 });
+
+export default rootReducer;

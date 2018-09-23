@@ -8,7 +8,7 @@ import { getRow, getColumn, getSubgrid, hasViolations, isReadyForSubmission } fr
 import SingleCell from './SingleCell';
 import fillRanges from '../data_structs/fillRanges';
 
-export default class SinglePuzzle extends Component {
+class SinglePuzzle extends Component {
     constructor(props) {
         super(props);
         this.state = {

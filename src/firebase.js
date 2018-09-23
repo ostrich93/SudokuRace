@@ -2,10 +2,10 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: process.env.SUDOKU_RACE_FIREBASE_API_KEY,
-    authDomain: process.env.SUDOKU_RACE_AUTH_DOMAIN,
-    databaseURL: process.env.SUDOKU_RACE_DATABASE_URL,
-    projectId: process.env.SUDOKU_RACE_PROJECTID,
+    apiKey: "AIzaSyCkhZiAMnGaGEDX0-mb5jiO6S2OFI4zvZs",
+    authDomain: "named-container-183602.firebaseapp.com",
+    databaseURL: "https://named-container-183602.firebaseio.com",
+    projectId: "named-container-183602",
     storageBucket: "named-container-183602.appspot.com",
     messagingSenderId: "530607937727"
 }

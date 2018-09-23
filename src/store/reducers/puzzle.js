@@ -1,7 +1,7 @@
 let initialState = {
-    currentPuzzle = [],
-    selectedNumber = 0,
-    selectedCell = {}
+    currentPuzzle : [],
+    selectedNumber : 0,
+    selectedCell : {}
 }
 
 //ACTION TYPES
@@ -35,7 +35,7 @@ export const selectFill = (fillValue) => ({
 //REDUCER
 function reducer(state=initialState, action) {
     switch (action.type) {
-        case GET_PUZZZLE:
+        case GET_PUZZLE:
             return { ...state, currentPuzzle: action.puzzle }
         case CHANGE_CELL_VALUE:
             const updatedBoard = state.currentPuzzle.map(c => c.equals(action.cell) ? c : action.cell);

@@ -13,12 +13,12 @@ const GOT_SCORE_FROM_SERVER = 'GOT_SCORE_FROM_SERVER';
 const GET_LEADERBOARD = 'GET_LEADERBOARD';
 // const GET_BEST_TIME = 'GET_BEST_TIME'; make this a thunk?
 
-export const getSoloLeaderboards = () => ({
+export const getSoloLeaderboards = (leaderboards) => ({
     type: GET_SOLO_LEADERBOARDS,
     leaderboards
 });
 
-export const getVsLeaderboards = () => ({
+export const getVsLeaderboards = (leaderboards) => ({
     type: GET_VS_LEADERBOARDS,
     leaderboards
 })
@@ -48,7 +48,7 @@ function reducer(state = initialState, action) {
         case SUBMIT_NEW_SCORE:
             return {...state, newTime: action.newTime, handle: action.handle }
         case GET_LEADERBOARD:
-            return {...state, leaderboard: leaderboard }
+            return {...state, leaderboard: action.leaderboard }
         default:
             return state;
     }

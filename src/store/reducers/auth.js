@@ -1,4 +1,4 @@
-initialState = {
+const initialState = {
     user: {}
 }
 
@@ -55,7 +55,7 @@ export const signUp = (newUser) => {
         const firestore = getFirestore();
         try {
             const res = await firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password);
-            await firestore.collection('users').doc(resp.user.uid).set({
+            await firestore.collection('users').doc(res.user.uid).set({
                 displayName: newUser.displayName
             });
             dispatch(setLoggedInUser(res.user))
