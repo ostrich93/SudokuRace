@@ -31,8 +31,8 @@ class SinglePuzzle extends Component {
         //start timer
         const clueList = this.props.clueList.clues;
         const puzzle = this.buildPuzzle(clueList);
-        const res = await this.props.getPuzzle(puzzle);
-        console.log('res', res);
+        await this.props.getPuzzle(puzzle);
+        // console.log('res', res);
         this.startTimer();
     }
 
@@ -110,31 +110,31 @@ class SinglePuzzle extends Component {
         let cn = 0;
         let sgval = 0;
         for (let i = 0; i < 81; i++) {
-            rn = i/9;
+            rn = parseInt(i/9);
             cn = i%9;
             if (rn < 3) {
                 if (cn < 3)
-                    sgval = 1;
+                    sgval = 0;
                 else if (cn >= 3 && cn < 6)
-                    sgval = 2;
+                    sgval = 1;
                 else
-                    sgval = 3;
+                    sgval = 2;
             }
             else if (rn >= 3 && rn < 6) {
                 if (cn < 3)
-                    sgval = 4;
+                    sgval = 3;
                 else if (cn >= 3 && cn < 6)
-                    sgval = 5;
+                    sgval = 4;
                 else
-                    sgval = 6;
+                    sgval = 5;
             }
             else {
                 if (cn < 3)
-                    sgval = 7;
+                    sgval = 6;
                 else if (cn >= 3 && cn < 6)
-                    sgval = 8;
+                    sgval = 7;
                 else
-                    sgval = 9;
+                    sgval = 8;
             }
             let possClue = clues.find(clue => clue.rowNum === rn && clue.colNum === cn && clue.sgNum === sgval);
             if (possClue) {
@@ -186,7 +186,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         clueList: puzzle,
         auth: state.firebase.auth,
-        // handle: handle
+        currentPuzzle: state.puzzle.currentPuzzle
     }
 };
 
