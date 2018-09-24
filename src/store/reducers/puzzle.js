@@ -41,6 +41,7 @@ function reducer(state=initialState, action) {
             const updatedBoard = state.currentPuzzle.map(c => c.equals(action.cell) ? c : action.cell);
             return { ...state, currentPuzzle: updatedBoard }
         case SELECT_CELL:
+            console.log('selected cell', action.cell);
             return { ...state, selectedCell: action.cell }
         case SELECT_FILL:
             return { ...state, selectedNumber: action.fillValue }

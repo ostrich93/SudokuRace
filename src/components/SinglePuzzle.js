@@ -60,6 +60,7 @@ class SinglePuzzle extends Component {
     }
 
     handleCellSelect(event) {
+        console.log(event.target.value);
         event.preventDefault();
         let cell = event.target.value;
         if (event.target.value === this.props.selectedCell) {
@@ -72,6 +73,7 @@ class SinglePuzzle extends Component {
     handleSubmit(event) { //used after picking cell and then clicking on a number on the pad.
         event.preventDefault();
         let currentCell = this.props.currentCell;
+        console.log('currentCell', currentCell);
         if (currentCell && !currentCell.isClue) {
             let nVal = event.target.value;
             let nCell = new Cell(nVal, currentCell.rowNum, currentCell.colNum, currentCell.sgNum, false)
@@ -98,6 +100,7 @@ class SinglePuzzle extends Component {
     }
 
     isValid(cell) {
+        console.log('cell', cell);
         const targetRow = this.getRow(cell.rowNum);
         const targetCol = this.getColumn(cell.colNum);
         const targetSG = this.getSubgrid(cell.sgNum);
@@ -149,13 +152,17 @@ class SinglePuzzle extends Component {
         return cellArr;
     }
 
+    // handleChange(cell, e) {
+    //     if (!cell.isClue)
+    // }
+
     render() {
         let cells = this.props.currentPuzzle;
-        console.log('cells', this.props);
+        // console.log('cells', this.props);
         return (
             <div>
                 <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
-                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid(cell)} cell={cell} handleCellSelect={this.handleCellSelect}/>)}
+                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} handleCellSelect={this.handleCellSelect}/>)}
                 </div>
                 <div className="buttonContainer"> {/* used to hold the buttons for changing fill values **/}
                     <button onClick={this.handleSubmit} value={1}>1</button>
@@ -171,6 +178,7 @@ class SinglePuzzle extends Component {
                 </div>
                 <div>
                     {/* something that holds the timer */}
+                    <div>{this.state.time/1000}</div>
                     <button onClick={this.submitScore}>Submit</button>
                 </div>
             </div>
