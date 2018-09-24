@@ -72,7 +72,8 @@ class SinglePuzzle extends Component {
 
     handleSubmit(event) { //used after picking cell and then clicking on a number on the pad.
         event.preventDefault();
-        let currentCell = this.props.currentCell;
+        console.log(this.props.selectedCell)
+        let currentCell = this.props.selectedCell;
         console.log('currentCell', currentCell);
         if (currentCell && !currentCell.isClue) {
             let nVal = event.target.value;
@@ -194,7 +195,8 @@ const mapStateToProps = (state, ownProps) => {
     return {
         clueList: puzzle,
         auth: state.firebase.auth,
-        currentPuzzle: state.puzzle.currentPuzzle
+        currentPuzzle: state.puzzle.currentPuzzle,
+        selectedCell: state.puzzle.selectedCell
     }
 };
 
