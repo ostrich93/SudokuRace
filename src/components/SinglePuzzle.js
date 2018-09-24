@@ -162,7 +162,7 @@ class SinglePuzzle extends Component {
         return (
             <div>
                 <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
-                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} onClick={this.handleCellSelect}/>)}
+                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} onClick={() => this.props.selectCell(cell)}/>)}
                 </div>
                 <div className="buttonContainer"> {/* used to hold the buttons for changing fill values **/}
                     <button onClick={this.handleSubmit} value={1}>1</button>
