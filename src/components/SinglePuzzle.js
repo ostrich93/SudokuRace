@@ -60,7 +60,7 @@ class SinglePuzzle extends Component {
     }
 
     handleCellSelect(event) {
-        console.log(event.target.value);
+        // console.log(event.target.value);
         event.preventDefault();
         let cell = event.target.value;
         if (event.target.value === this.props.selectedCell) {
@@ -162,7 +162,7 @@ class SinglePuzzle extends Component {
         return (
             <div>
                 <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
-                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} handleCellSelect={this.handleCellSelect}/>)}
+                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} onClick={this.handleCellSelect}/>)}
                 </div>
                 <div className="buttonContainer"> {/* used to hold the buttons for changing fill values **/}
                     <button onClick={this.handleSubmit} value={1}>1</button>
