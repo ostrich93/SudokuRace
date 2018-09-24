@@ -88,7 +88,7 @@ class SinglePuzzle extends Component {
         const inds = [0,1,2,3,4,5,6,7,8];
         const rows = inds.map(i => this.getRow(i));
         const cols = inds.map(i => this.getColumn(i));
-        const sgs = inds.map(i => getSubgrid(i));
+        const sgs = inds.map(i => this.getSubgrid(i));
         let allgroups = [rows].concat(cols,sgs);
         if (allgroups.every(group => isReadyForSubmission(group))){
             this.setState({
