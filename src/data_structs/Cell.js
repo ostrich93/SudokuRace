@@ -30,7 +30,8 @@ class Cell {
     }
 
     equals(input) {
-        return (this.rowNum === input.rowNum) && (this.colNum === input.colNum) && (this.sgNum === input.sgNum) && (this.isClue === input.isClue);
+        console.log(input);
+        return (this.index === input.index);
     }
 
 }

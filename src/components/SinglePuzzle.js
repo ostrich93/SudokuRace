@@ -24,7 +24,7 @@ class SinglePuzzle extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.submitScore = this.submitScore.bind(this);
         this.startTimer = this.startTimer.bind(this);
-
+        this.handleChange = this.handleChange.bind(this);
     }
 
     async componentDidMount() {
@@ -72,12 +72,13 @@ class SinglePuzzle extends Component {
 
     handleSubmit(event) { //used after picking cell and then clicking on a number on the pad.
         event.preventDefault();
-        console.log(this.props.selectedCell)
+        // console.log(this.props.selectedCell)
         let currentCell = this.props.selectedCell;
         console.log('currentCell', currentCell);
         if (currentCell && !currentCell.isClue) {
             let nVal = event.target.value;
             let nCell = new Cell(nVal, currentCell.rowNum, currentCell.colNum, currentCell.sgNum, false)
+            nCell.index = currentCell.index;
             this.props.changeCell(nCell);
         }
     }
@@ -153,9 +154,9 @@ class SinglePuzzle extends Component {
         return cellArr;
     }
 
-    // handleChange(cell, e) {
-    //     if (!cell.isClue)
-    // }
+    async handleChange(cell, e) {
+        await this.props.changeCell(cell);
+    }
 
     render() {
         let cells = this.props.currentPuzzle;
@@ -163,7 +164,7 @@ class SinglePuzzle extends Component {
         return (
             <div>
                 <div className="puzzleContainer"> {/* container of grid, has display: flex **/}
-                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} onClick={() => this.props.selectCell(cell)}/>)}
+                    {cells.map(cell => <SingleCell key={cell.index} isValid={this.isValid} cell={cell} onClick={() => this.props.selectCell(cell)} handleChange={this.handleChange}/>)}
                 </div>
                 <div className="buttonContainer"> {/* used to hold the buttons for changing fill values **/}
                     <button onClick={this.handleSubmit} value={1}>1</button>

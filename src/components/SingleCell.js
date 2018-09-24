@@ -1,18 +1,13 @@
 import React from 'react';
-
-const mapStateToProps = state => {
-    return {
-
-    }
-}
+import { connect } from 'react-redux';
 
 const SingleCell = (props) => {
-    const { isValid, cell, onClick, currentCell } = props;
+    const { isValid, cell, onClick, currentCell, handleChange } = props;
     const cNameTwo = cell.isClue ? 'clue' : '';
     const cNameThree = isValid ? 'valid' : 'invalid';
     const fullClassName = ['cell', cNameTwo, cNameThree].join(' ');
     return (
-        <div className={fullClassName} onClick={onClick}>{cell.fillValue}</div>
+        <div className={fullClassName} onClick={onClick} onChange={e => handleChange(cell, e)}>{cell.fillValue}</div>
     )
 }
 
